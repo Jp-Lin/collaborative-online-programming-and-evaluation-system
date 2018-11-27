@@ -1,0 +1,47 @@
+<div>
+  <form #formRef="ngForm" ngNativeValidate>
+    <div class="form-group">
+      <label for="problemName">Problem Name</label>
+      <input 
+        type="text" 
+        name="problemName" 
+        id="problemName" 
+        class="form-control" 
+        required 
+        placeholder="Enter problem name"
+        [(ngModel)]="newProblem.name">
+    </div>
+    <div class="form-group">
+      <label for="problemDesc">Problem Description</label>
+      <textarea 
+        type="text" 
+        size="3"
+        name="problemDesc" 
+        id="problemDesc" 
+        class="form-control" 
+        required 
+        placeholder="Enter problem description"
+        [(ngModel)]="newProblem.desc">
+      </textarea>
+    </div>
+    <div class="form-group">
+      <label for="difficulty">Problem Difficulty</label>
+      <select
+        name="difficulty" 
+        id="difficulty" 
+        class="form-control" 
+        [(ngModel)]="newProblem.difficulty">
+      <option *ngFor="let difficulty of difficulties" [value]="difficulty">
+        {{difficulty}}
+      </option>
+      </select>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <button type="submit" 
+                class="btn btn-primary pull-right"
+                (click)="addProblem()">Add problem</button>
+      </div>
+    </div>
+  </form>
+</div>
