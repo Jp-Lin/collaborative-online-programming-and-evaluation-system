@@ -27,7 +27,7 @@ export class NewProblemComponent implements OnInit {
 
   addProblem(): void {
     console.log(this.newProblem);
-    this.dataServie.addProblem(this.newProblem);
+    this.dataServie.addProblem(this.newProblem).catch(err => console.log(err._body));
     this.newProblem = Object.assign({}, DEFAULT_PROBLEM);
   }
 }
