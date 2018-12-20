@@ -11,17 +11,17 @@ import { DataService } from 'src/app/services/data.service';
 export class ProblemDetailComponent implements OnInit {
 
   problem: Problem;
+
   constructor(private activatedRoute: ActivatedRoute, private dataService: DataService) { }
 
   ngOnInit() {
-    this.activatedRoute.params.subscribe( params =>
+    this.activatedRoute.params.subscribe(params =>
       this.dataService.getProblem(+params['id']).then(
         problem => {
-          console.log(problem[0]);
           this.problem = problem[0];
         }
       )
-      );
+    );
   }
 
 }

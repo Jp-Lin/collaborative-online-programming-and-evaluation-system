@@ -10,6 +10,7 @@ import { ProblemDetailComponent } from './components/problem-detail/problem-deta
 import { NewProblemComponent } from './components/new-problem/new-problem.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { HttpModule } from '@angular/http';
+import { EditorComponent } from './components/editor/editor.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { HttpModule } from '@angular/http';
     ProblemListComponent,
     ProblemDetailComponent,
     NewProblemComponent,
-    NavbarComponent
+    NavbarComponent,
+    EditorComponent
   ],
   imports: [
     BrowserModule,
