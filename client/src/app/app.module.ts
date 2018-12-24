@@ -11,6 +11,7 @@ import { NewProblemComponent } from './components/new-problem/new-problem.compon
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { HttpModule } from '@angular/http';
 import { EditorComponent } from './components/editor/editor.component';
+import { ProfileComponent } from './components/profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { EditorComponent } from './components/editor/editor.component';
     NewProblemComponent,
     NavbarComponent,
     EditorComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,

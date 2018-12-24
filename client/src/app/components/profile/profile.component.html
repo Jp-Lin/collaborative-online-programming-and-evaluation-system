@@ -1,0 +1,27 @@
+<div class="container">
+  <!-- Nav pills -->
+  <ul class="nav nav-pills">
+    <li class="nav-item">
+      <a class="nav-link active" data-toggle="pill" href="#profile">Profile</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="pill" href="#password">Password</a>
+    </li>
+  </ul>
+
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <div class="tab-pane container active my-3" id="profile">
+      <h2> Username </h2>
+      <p *ngIf="this.authService.getProfile()">{{this.authService.getProfile().nickname}}</p>
+      <h2> Email </h2>
+      <p *ngIf="this.authService.getProfile()">{{this.authService.getProfile().email}}</p>
+    </div>
+    <div class="tab-pane container fade my-3" id="password">
+      <button type="button" class="btn btn-success" (click)="resetPassword()">Reset Password</button>
+      <div *ngIf="resetMessage" class="my-3">
+        {{resetMessage}}
+      </div>
+    </div>
+  </div>
+</div>

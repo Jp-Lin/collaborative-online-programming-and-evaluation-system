@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import * as auth0 from 'auth0-js';
 import { Auth0Lock } from 'auth0-lock';
+import { Response, Headers, Http, RequestOptions } from '@angular/http';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -9,33 +10,36 @@ import { Auth0Lock } from 'auth0-lock';
 export class AuthService {
   clientID = 'pN5bXc-I0YtQbY_4Ldb3Hzib3Q8qeH-K';
   domain = 'cojapp.auth0.com';
-  redirectUrl = 'http://localhost:3000';
+  redirectUrl = 'http://localhost:3000/';
   // redirectUrl = this.router.url;
   responseType = 'token id_token';
   requestedScopes = 'openid profile email';
 
   username = '';
-  lock = new Auth0Lock(this.clientID, this.domain,
-    {
-      autoclose: true,
-      auth: {
-        redirect: true,
-        redirectUrl: this.redirectUrl,
-        responseType: this.responseType,
-        params: {
-          scope: this.requestedScopes
-        }
+  _lock = new Auth0Lock(this.clientID, this.domain, {
+    autoclose: true,
+    auth: {
+      redirect: false,
+      redirectUrl: this.redirectUrl,
+      responseType: this.responseType,
+      params: {
+        scope: this.requestedScopes
       }
-    });
+    }
+  });
+  get lock() {
+    return this._lock;
+  }
 
-  constructor(public router: Router) {
+  constructor(private router: Router, private http: Http) {
     if (this.isAuthenticated()) {
-      this.username = this.getUser().nickname;
+      this.username = this.getProfile().nickname;
     }
     // this.username = this.getUser() ? this.getUser().nickname : '';
   }
 
   public login(): void {
+    localStorage.setItem('redirectLoc', this.router.url);
     this.lock.show();
   }
 
@@ -48,11 +52,20 @@ export class AuthService {
           localStorage.setItem('profile', JSON.stringify(profile));
           this.username = profile.nickname;
         });
+        const redirectLoc: string = localStorage.getItem('redirectLoc');
+        this.router.navigate([redirectLoc]);
+
+        // this.router.navigate([this.router.url]);
       }
     });
+
     this.lock.on('authorization_error', (err) => {
       this.router.navigate(['/']);
       console.log(err);
+    });
+
+    this.lock.on('hide', () => {
+      this.router.navigate([this.router.url]);
     });
   }
 
@@ -71,6 +84,9 @@ export class AuthService {
     localStorage.removeItem('id_token');
     localStorage.removeItem('expires_at');
     localStorage.removeItem('profile');
+    localStorage.removeItem('redirectUrl');
+    // const redirectLoc: string = localStorage.getItem('redirectLoc');
+    this.router.navigate([this.router.url]);
     // Go back to the home route
     // this.router.navigate(['/']);
   }
@@ -82,7 +98,26 @@ export class AuthService {
     return new Date().getTime() < expiresAt;
   }
 
-  public getUser() {
+  public getProfile() {
     return JSON.parse(localStorage.getItem('profile'));
+  }
+
+  resetPassword(): Observable<Response> {
+    const profile = this.getProfile();
+    const url = `https://${this.domain}/dbconnections/change_password`;
+    const headers = new Headers({ 'content-type': 'application/json' });
+    const options: RequestOptions = new RequestOptions({ headers: headers });
+
+    const body = {
+      client_id: this.clientID,
+      email: profile.email,
+      connection: 'Username-Password-Authentication'
+    };
+    return this.http.post(url, body, options);
+  }
+
+  handleError(error: any): Promise<any> {
+    console.error('Error occurred', error);
+    return Promise.reject(error.message || error);
   }
 }

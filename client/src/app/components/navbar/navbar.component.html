@@ -26,7 +26,7 @@
               {{this.authService.username}}
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="#">My Profile</a>
+              <a class="dropdown-item" [routerLink]="['/profile']" routerLinkActive="router-link-active" >My Profile</a>
               <a class="dropdown-item" href="#">My Favorates</a>
               <a class="dropdown-item" href="#">My Submissions</a>
               <div class="dropdown-divider"></div>
