@@ -19,7 +19,7 @@ import { EditorComponent } from './components/editor/editor.component';
     ProblemDetailComponent,
     NewProblemComponent,
     NavbarComponent,
-    EditorComponent
+    EditorComponent,
   ],
   imports: [
     BrowserModule,

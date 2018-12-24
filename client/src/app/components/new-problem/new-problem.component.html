@@ -31,9 +31,10 @@
         id="difficulty" 
         class="form-control" 
         [(ngModel)]="newProblem.difficulty">
-      <option *ngFor="let difficulty of difficulties" [value]="difficulty">
+        <option value="default" disabled selected>Select difficulty</option>
+        <option *ngFor="let difficulty of difficulties" [value]="difficulty">
         {{difficulty}}
-      </option>
+        </option>
       </select>
     </div>
     <div class="row">

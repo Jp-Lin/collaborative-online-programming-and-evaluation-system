@@ -18,6 +18,11 @@ mongoose.connect('mongodb://admin:admin01@ds139334.mlab.com:39334/coj', {
 app.use(express.static(path.join(__dirname, '../public')));
 app.use('/', indexRouter);
 app.use('/api/v1', restRouter);
+
+app.use( (req, res)=> {
+  res.sendFile("index.html", {root: path.join(__dirname, '../public/')});
+});
+
 // app.listen(port, () => console.log(`example app listening on port ${port}!`));
 
 const server = http.createServer(app);

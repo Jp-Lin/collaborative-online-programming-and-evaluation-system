@@ -11,21 +11,26 @@
           </form>
         </ul>
         <ul class="navbar-nav">
-          <li>
-            <form class="navbar-form">
-              <button type="button" class="btn btn-primary">Sign in</button>
-            </form>
+          <li class="nav-item"  *ngIf="!authService.isAuthenticated()">
+              <button type="button" class="btn btn-primary" (click)="login()">Sign in</button>
           </li>
-          <li class="nav-item dropdown ">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              {{username}}
+
+          <li class="nav-item dropdown" *ngIf="authService.isAuthenticated()">
+            <a class="nav-link dropdown-toggle" 
+            href="#" 
+            id="navbarDropdown" 
+            role="button" 
+            data-toggle="dropdown" 
+            aria-haspopup="true" 
+            aria-expanded="false">
+              {{this.authService.username}}
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
               <a class="dropdown-item" href="#">My Profile</a>
               <a class="dropdown-item" href="#">My Favorates</a>
               <a class="dropdown-item" href="#">My Submissions</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#">Log out</a>
+              <a class="dropdown-item" style="cursor: pointer;" (click)="logout()">Log out</a>
             </div>
           </li>
         </ul>
