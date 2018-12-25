@@ -17,7 +17,8 @@ export class AuthGuardService implements CanActivate {
     if (this.authService.isAuthenticated()) {
       return Promise.resolve(true);
     } else {
-      localStorage.setItem('redirectLoc', state.url);
+      // localStorage.setItem('redirectLoc', state.url);
+      this.authService.redirectLoc = state.url;
       // this.router.navigate(['/']);
       this.authService.lock.show();
       return Promise.resolve(false);

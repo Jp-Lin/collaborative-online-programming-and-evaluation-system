@@ -13,9 +13,7 @@ export class AuthService {
   redirectUrl = 'http://localhost:3000/';
   // redirectUrl = this.router.url;
   responseType = 'token id_token';
-  requestedScopes = 'openid profile email';
-
-  username = '';
+  requestedScopes = 'openid profile email roles';
   _lock = new Auth0Lock(this.clientID, this.domain, {
     autoclose: true,
     auth: {
@@ -27,6 +25,10 @@ export class AuthService {
       }
     }
   });
+  username = '';
+  redirectLoc = '';
+  nameSpaceAuth0Role = 'https://localhost/roles';
+
   get lock() {
     return this._lock;
   }
@@ -39,7 +41,8 @@ export class AuthService {
   }
 
   public login(): void {
-    localStorage.setItem('redirectLoc', this.router.url);
+    // localStorage.setItem('redirectLoc', this.router.url);
+    this.redirectLoc = this.router.url;
     this.lock.show();
   }
 
@@ -52,8 +55,8 @@ export class AuthService {
           localStorage.setItem('profile', JSON.stringify(profile));
           this.username = profile.nickname;
         });
-        const redirectLoc: string = localStorage.getItem('redirectLoc');
-        this.router.navigate([redirectLoc]);
+        // const redirectLoc: string = localStorage.getItem('redirectLoc');
+        this.router.navigate([this.redirectLoc]);
 
         // this.router.navigate([this.router.url]);
       }
@@ -65,7 +68,12 @@ export class AuthService {
     });
 
     this.lock.on('hide', () => {
-      this.router.navigate([this.router.url]);
+      // const redirectLoc = localStorage.getItem('redirectLoc');
+      if (this.redirectLoc === '/profile') {
+        this.router.navigate(['/']);
+      } else {
+        this.router.navigate([this.router.url]);
+      }
     });
   }
 
@@ -96,6 +104,15 @@ export class AuthService {
     // access token's expiry time
     const expiresAt = JSON.parse(localStorage.getItem('expires_at'));
     return new Date().getTime() < expiresAt;
+  }
+  public isAdmin(): boolean {
+    if (this.isAuthenticated()
+        && this.getProfile()
+        && this.getProfile()[this.nameSpaceAuth0Role].includes('Admin')) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   public getProfile() {

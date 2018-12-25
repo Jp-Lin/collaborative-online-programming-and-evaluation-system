@@ -1,4 +1,4 @@
-<div>
+<div *ngIf="this.authService.isAdmin()">
   <form #formRef="ngForm" ngNativeValidate>
     <div class="form-group">
       <label for="problemName">Problem Name</label>
