@@ -1,13 +1,16 @@
 import { Injectable } from '@angular/core';
-import { EditorComponent } from '../components/editor/editor.component';
+import { COLORS } from 'src/assets/colors';
 
 declare var io: any;
+declare var ace: any;
 
 @Injectable({
   providedIn: 'root'
 })
 export class CollaborationService {
   collaborationSocket: any;
+  clientsInfo = {};
+  clientNum = 0;
 
   constructor() { }
 
@@ -19,9 +22,49 @@ export class CollaborationService {
       editor.lastAppliedChange = delta;
       editor.getSession().getDocument().applyDeltas([delta]);
     });
-    this.collaborationSocket.on('message', message => console.log('received: ' + message));
+    this.collaborationSocket.on('cursorMove', (cursor) => {
+      console.log('cursor move: ' + cursor);
+      const session = editor.getSession();
+      cursor = JSON.parse(cursor);
+      const x = cursor['row'];
+      const y = cursor['column'];
+      const changeClientId = cursor['socketId'];
+
+      if (changeClientId in this.clientsInfo) {
+        session.removeMarker(this.clientsInfo[changeClientId]['marker']);
+      } else {
+        this.clientsInfo[changeClientId] = {};
+        const css = this.generateCursorStyle(changeClientId, this.clientNum);
+        document.body.append(css);
+        this.clientNum ++;
+      }
+
+      const Range = ace.require('ace/range').Range;
+      const newMarker = session.addMarker(
+        new Range(x, y, x, y + 1), 'editor_cursor_' + changeClientId, true);
+      this.clientsInfo[changeClientId]['marker'] = newMarker;
+    });
+
+    // this.collaborationSocket.on('message', message => console.log('received: ' + message));
   }
+
   change(delta: string): void {
     this.collaborationSocket.emit('change', delta);
+  }
+
+  cursorMove(cursor: string): void {
+    this.collaborationSocket.emit('cursorMove', cursor);
+  }
+  restoreBuffer(): void {
+    this.collaborationSocket.emit('restoreBuffer');
+  }
+
+  generateCursorStyle(changeClientId: string, clientNum: number) {
+    const css = document.createElement('style');
+    css.type = 'text/css';
+    css.innerHTML = '.editor_cursor_' + changeClientId
+    + ' {position: absolute; background: ' + COLORS[clientNum] + ';'
+    + 'z-index: 100; width: 3px !important; }';
+    return css;
   }
 }
