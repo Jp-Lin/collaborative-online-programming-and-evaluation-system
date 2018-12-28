@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 
@@ -12,6 +12,7 @@ import { NavbarComponent } from './components/navbar/navbar.component';
 import { HttpModule } from '@angular/http';
 import { EditorComponent } from './components/editor/editor.component';
 import { ProfileComponent } from './components/profile/profile.component';
+import { SearchPipe } from './pipes/search.pipe';
 
 @NgModule({
   declarations: [
@@ -21,12 +22,14 @@ import { ProfileComponent } from './components/profile/profile.component';
     NewProblemComponent,
     NavbarComponent,
     EditorComponent,
-    ProfileComponent
+    ProfileComponent,
+    SearchPipe
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
+    ReactiveFormsModule,
     HttpModule
   ],
   providers: [],

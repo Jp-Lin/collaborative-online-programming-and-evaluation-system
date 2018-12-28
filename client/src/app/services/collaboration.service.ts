@@ -16,13 +16,15 @@ export class CollaborationService {
 
   init(editor: any, sessionId: string): void {
     this.collaborationSocket = io(window.location.origin, { query: 'sessionId=' + sessionId });
+
     this.collaborationSocket.on('change', (delta: string) => {
       console.log('collaboration: editor changes by ' + delta);
       delta = JSON.parse(delta);
       editor.lastAppliedChange = delta;
       editor.getSession().getDocument().applyDeltas([delta]);
     });
-    this.collaborationSocket.on('cursorMove', (cursor) => {
+
+    this.collaborationSocket.on('cursorMove', (cursor: string) => {
       console.log('cursor move: ' + cursor);
       const session = editor.getSession();
       cursor = JSON.parse(cursor);
@@ -36,7 +38,7 @@ export class CollaborationService {
         this.clientsInfo[changeClientId] = {};
         const css = this.generateCursorStyle(changeClientId, this.clientNum);
         document.body.append(css);
-        this.clientNum ++;
+        this.clientNum++;
       }
 
       const Range = ace.require('ace/range').Range;
@@ -45,6 +47,14 @@ export class CollaborationService {
       this.clientsInfo[changeClientId]['marker'] = newMarker;
     });
 
+    this.collaborationSocket.on('cursorDelete', (leaveClientId: string) => {
+      const session = editor.getSession();
+      console.log('socket: ' + leaveClientId + ' left.');
+      if (leaveClientId in this.clientsInfo) {
+        session.removeMarker(this.clientsInfo[leaveClientId]['marker']);
+        delete this.clientsInfo[leaveClientId];
+      }
+    });
     // this.collaborationSocket.on('message', message => console.log('received: ' + message));
   }
 
@@ -63,8 +73,8 @@ export class CollaborationService {
     const css = document.createElement('style');
     css.type = 'text/css';
     css.innerHTML = '.editor_cursor_' + changeClientId
-    + ' {position: absolute; background: ' + COLORS[clientNum] + ';'
-    + 'z-index: 100; width: 3px !important; }';
+      + ' {position: absolute; background: ' + COLORS[clientNum] + ';'
+      + 'z-index: 100; width: 3px !important; }';
     return css;
   }
 }
