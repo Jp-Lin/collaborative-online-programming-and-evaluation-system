@@ -3,7 +3,7 @@ import { AuthService } from 'src/app/services/auth.service';
 import { FormControl } from '@angular/forms';
 import { SearchService } from 'src/app/services/search.service';
 import { Subscription } from 'rxjs';
-import {debounceTime} from 'rxjs/operators';
+import { debounceTime } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
 @Component({
@@ -32,11 +32,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
     // console.log(this.authService.username);
     // }
     this.subscriptiosSearchValue = this.searchValue
-    .valueChanges
-    .pipe(debounceTime(200))
-    .subscribe(
-      (term: string) => { this.searchService.setInput(term); }
-    );
+      .valueChanges
+      .pipe(debounceTime(200))
+      .subscribe(
+        (term: string) => { this.searchService.setInput(term); }
+      );
   }
 
   ngOnDestroy() {

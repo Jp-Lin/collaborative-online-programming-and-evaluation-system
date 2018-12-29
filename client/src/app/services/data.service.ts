@@ -23,11 +23,6 @@ export class DataService {
 
   }
 
-  private handleError(error: any): Promise<any> {
-    console.error('An error occurred', error);
-    return Promise.reject(error.body || error);
-  }
-
   getProblem(id: number): Promise<Problem> {
     return this.http.get(`api/v1/problems/${id}`)
     .toPromise()
@@ -46,5 +41,22 @@ export class DataService {
       return res.json();
     })
     .catch(this.handleError);
+  }
+
+  buildAndRun(data: any): Promise<any> {
+    const headers = new Headers({ 'content-type': 'application/json'});
+    const options = new RequestOptions({headers: headers});
+
+    return this.http.post('api/v1/build_and_run', data, options)
+    .toPromise()
+    .then((res: Response) => {
+      return res.json();
+    })
+    .catch(this.handleError);
+  }
+
+  private handleError(error: any): Promise<any> {
+    console.error('An error occurred', error);
+    return Promise.reject(error.body || error);
   }
 }
