@@ -13,26 +13,34 @@ declare var ace: any;
 export class EditorComponent implements OnInit {
 
   editor: any;
-  languages = ['Java', 'Python2.7', 'C++'];
+  languages = ['Java', 'Python2.7', 'Python3.5', 'C++'];
   language = 'Java';
   sessionId: string;
   output: string;
 
   defaultContent = {
-    'Java': `public class Example {
+    'Java': `public class Solution {
       public static void main(String[] args) {
           // Type your Java code here
         }
     }`,
-
     'Python2.7': `class Solution:
-    def example():
+    def solution(self):
     # Type your Python 2.7 code here
-    `,
 
+if __name__ == '__main__':
+    Solution().solution()
+    `,
+    'Python3.5': `class Solution:
+    def solution(self):
+    # Type your Python 3.5 code here
+
+if __name__ == '__main__':
+    Solution().solution()
+    `,
     'C++': `#include <iostream>
     using namespace std;
-    int mian() {
+    int main() {
       //Type your C++ code here
       return 0;
     }
@@ -80,6 +88,7 @@ export class EditorComponent implements OnInit {
     let lang: string;
     switch (this.language) {
       case 'Python2.7': lang = 'python'; break;
+      case 'Python3.7': lang = 'python'; break;
       case 'C++': lang = 'c_cpp'; break;
       default: lang = this.language;
     }
