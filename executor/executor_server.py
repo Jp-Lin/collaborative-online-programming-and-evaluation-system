@@ -1,3 +1,4 @@
+import sys
 import json
 from flask import Flask
 from flask import request
@@ -8,14 +9,9 @@ import executor_utils as eu
 app = Flask(__name__)
 
 
-@app.route('/')
-def hello_world():
-    return 'Hello, World!'
-
-
 @app.route('/build_and_run', methods=['POST'])
 def build_and_run():
-    print(request)
+    print("Got called with {}.".format(request.data))
     data = json.loads(request.data)
 
     if 'code' not in data or 'lang' not in data:
@@ -32,4 +28,6 @@ def build_and_run():
 
 if __name__ == '__main__':
     eu.load_images()
-    app.run(debug=True)
+    port = int(sys.argv[1])
+    print 'Executor running on port {}.'.format(port)
+    app.run(debug=True, port=port)
